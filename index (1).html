@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Россия — Страна Возможностей | Исследование ЛБ-12</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --red: #cc0000;
+  --blue: #003087;
+  --gold: #d4af37;
+  --gold-light: #f0d060;
+  --dark: #080810;
+  --dark2: #0f0f1a;
+  --dark3: #161625;
+  --light: #f5f0e8;
+  --gray: #7a7a9a;
+  --gray2: #4a4a6a;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--dark); color: var(--light); font-family: 'Montserrat', sans-serif; overflow-x: hidden; }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.2rem 3rem;
+  background: rgba(8,8,16,0.9); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(212,175,55,0.15);
+}
+.nav-logo { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--gold); }
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a { color: var(--gray); text-decoration: none; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; transition: color 0.3s; }
+.nav-links a:hover { color: var(--gold); }
+
+.hero {
+  min-height: 100vh;
+  display: grid; grid-template-columns: 1.1fr 0.9fr;
+  align-items: center; padding: 8rem 5rem 4rem; gap: 4rem;
+  position: relative; overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 10% 50%, rgba(0,48,135,0.25) 0%, transparent 55%),
+              radial-gradient(ellipse at 90% 30%, rgba(204,0,0,0.15) 0%, transparent 55%),
+              radial-gradient(ellipse at 50% 100%, rgba(212,175,55,0.07) 0%, transparent 50%);
+}
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(212,175,55,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(212,175,55,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+.flag-top { position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg,#fff 33.33%,#003087 33.33%,#003087 66.66%,#cc0000 66.66%); }
+.hero-left { position: relative; z-index: 2; animation: fadeUp 0.9s ease both; }
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 0.75rem;
+  border: 1px solid rgba(212,175,55,0.4); color: var(--gold);
+  font-size: 0.65rem; letter-spacing: 0.35em; text-transform: uppercase;
+  padding: 0.5rem 1.2rem; margin-bottom: 2.5rem;
+}
+.edot { width:5px;height:5px;background:var(--gold);border-radius:50%;animation:pulse 2s infinite; }
+.hero h1 { font-family:'Playfair Display',serif; font-size:clamp(2.8rem,5vw,5.5rem); font-weight:900; line-height:1.05; margin-bottom:2rem; }
+.h1-plain { display:block; color:var(--light); }
+.h1-gold { display:block; background:linear-gradient(135deg,var(--gold),var(--gold-light),var(--gold)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; font-style:italic; }
+.hero-desc { font-size:0.93rem; color:var(--gray); line-height:1.9; max-width:500px; margin-bottom:3rem; }
+.cta-group { display:flex; gap:1rem; flex-wrap:wrap; }
+.btn-p { background:var(--gold); color:var(--dark); font-family:'Montserrat',sans-serif; font-weight:700; font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; padding:1rem 2.5rem; border:none; cursor:pointer; text-decoration:none; display:inline-block; transition:all 0.3s; }
+.btn-p:hover { background:var(--gold-light); transform:translateY(-2px); }
+.btn-s { background:transparent; color:var(--light); font-family:'Montserrat',sans-serif; font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; padding:1rem 2.5rem; border:1px solid rgba(255,255,255,0.2); cursor:pointer; text-decoration:none; display:inline-block; transition:all 0.3s; }
+.btn-s:hover { border-color:var(--gold); color:var(--gold); }
+
+.hero-right { position:relative; z-index:2; animation:fadeUp 0.9s ease 0.2s both; }
+.stats-card {
+  background:rgba(255,255,255,0.03); border:1px solid rgba(212,175,55,0.2); padding:3rem; position:relative;
+}
+.stats-card::before { content:''; position:absolute; top:0;left:0; width:100%;height:3px; background:linear-gradient(90deg,var(--red),var(--blue),var(--gold)); }
+.sc-title { font-size:0.62rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); margin-bottom:2.5rem; }
+.sg { display:grid; grid-template-columns:1fr 1fr; gap:2rem; }
+.si { text-align:center; }
+.sn { font-family:'Playfair Display',serif; font-size:3.5rem; font-weight:700; color:var(--gold); display:block; line-height:1; margin-bottom:0.5rem; }
+.sl { font-size:0.62rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gray); }
+.sdiv { grid-column:1/-1; height:1px; background:rgba(255,255,255,0.06); }
+.live-row { display:flex; align-items:center; gap:0.5rem; margin-top:2rem; padding-top:2rem; border-top:1px solid rgba(255,255,255,0.06); font-size:0.68rem; color:var(--gray); }
+.ldot { width:7px;height:7px; background:#44ff88; border-radius:50%; animation:pulse 1.5s infinite; box-shadow:0 0 8px #44ff88; }
+
+.fdiv { width:100%; height:1px; background:linear-gradient(90deg,transparent,rgba(212,175,55,0.25),transparent); }
+
+.sw { max-width:1200px; margin:0 auto; padding:7rem 3rem; }
+.sh { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:4rem; flex-wrap:wrap; gap:2rem; }
+.sl2 { font-size:0.62rem; letter-spacing:0.35em; text-transform:uppercase; color:var(--gold); margin-bottom:0.75rem; }
+.st { font-family:'Playfair Display',serif; font-size:clamp(2rem,4vw,3.5rem); font-weight:700; line-height:1.15; }
+.sd { color:var(--gray); font-size:0.88rem; line-height:1.9; max-width:520px; }
+
+.about-s { background:var(--dark2); }
+.about-in { display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:center; }
+.about-blocks { display:flex; flex-direction:column; gap:1px; }
+.ab { display:flex; gap:1.5rem; padding:2rem; background:rgba(255,255,255,0.02); border-left:2px solid transparent; transition:all 0.3s; }
+.ab:hover { background:rgba(255,255,255,0.04); border-left-color:var(--gold); }
+.ab-icon { font-size:1.8rem; flex-shrink:0; width:2.5rem; }
+.ab h3 { font-size:0.9rem; font-weight:600; margin-bottom:0.4rem; }
+.ab p { font-size:0.8rem; color:var(--gray); line-height:1.7; }
+.aq { margin-top:2.5rem; padding:2rem; border-left:3px solid var(--gold); background:rgba(212,175,55,0.05); }
+.aq p { font-family:'Playfair Display',serif; font-style:italic; font-size:1.05rem; line-height:1.7; }
+.aq cite { display:block; margin-top:0.75rem; font-size:0.72rem; color:var(--gray); font-style:normal; }
+
+.mg { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:rgba(255,255,255,0.06); }
+.mc { background:var(--dark); padding:2.5rem 2rem; position:relative; transition:background 0.3s; }
+.mc:hover { background:var(--dark3); }
+.mn { font-family:'Playfair Display',serif; font-size:4rem; font-weight:900; color:rgba(212,175,55,0.1); position:absolute; top:1rem;right:1.5rem; line-height:1; }
+.mi { font-size:1.75rem; margin-bottom:1.5rem; }
+.mc h3 { font-size:0.88rem; font-weight:600; margin-bottom:0.6rem; }
+.mc p { font-size:0.78rem; color:var(--gray); line-height:1.7; }
+
+.res-s { background:var(--dark2); }
+.rbar { display:flex; align-items:center; justify-content:space-between; padding:1.2rem 2rem; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.07); margin-bottom:3rem; flex-wrap:wrap; gap:1rem; }
+.lbadge { display:flex; align-items:center; gap:0.5rem; font-size:0.68rem; letter-spacing:0.2em; text-transform:uppercase; color:#44ff88; }
+.rright { display:flex; align-items:center; gap:1.5rem; }
+.lupd { font-size:0.72rem; color:var(--gray); }
+.rbtn { background:transparent; border:1px solid var(--gold); color:var(--gold); font-family:'Montserrat',sans-serif; font-size:0.68rem; letter-spacing:0.2em; text-transform:uppercase; padding:0.6rem 1.5rem; cursor:pointer; transition:all 0.3s; }
+.rbtn:hover { background:var(--gold); color:var(--dark); }
+
+.bh { display:flex; align-items:center; gap:1.5rem; margin:3rem 0 2rem; padding-bottom:1rem; border-bottom:1px solid rgba(212,175,55,0.15); }
+.bn { font-family:'Playfair Display',serif; font-size:3rem; font-weight:900; color:rgba(212,175,55,0.18); line-height:1; flex-shrink:0; }
+.bt { font-size:0.68rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--gold); }
+
+.cg { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem; }
+.cc { background:var(--dark); border:1px solid rgba(255,255,255,0.07); padding:2rem; position:relative; overflow:hidden; transition:border-color 0.3s; }
+.cc:hover { border-color:rgba(212,175,55,0.3); }
+.cc::after { content:''; position:absolute; bottom:0;left:0; width:0;height:2px; background:var(--gold); transition:width 0.5s; }
+.cc:hover::after { width:100%; }
+.cc.wide { grid-column:1/-1; }
+.cqn { font-size:0.6rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--gray2); margin-bottom:0.4rem; }
+.cq { font-family:'Playfair Display',serif; font-size:0.95rem; margin-bottom:1.5rem; line-height:1.4; }
+.cw { position:relative; height:220px; }
+.cw.tall { height:280px; }
+.cf { margin-top:1rem; display:flex; justify-content:space-between; align-items:center; }
+.ctotal { font-size:0.7rem; color:var(--gray); }
+.ctotal span { color:var(--gold); font-weight:600; }
+.ctop { font-size:0.7rem; color:var(--gray); }
+.ctop span { color:var(--light); }
+
+.loading { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1.5rem; padding:6rem 2rem; color:var(--gray); font-size:0.82rem; }
+.spin { width:40px;height:40px; border:2px solid rgba(212,175,55,0.15); border-top-color:var(--gold); border-radius:50%; animation:spin 0.8s linear infinite; }
+
+.conc-hero { background:linear-gradient(135deg,rgba(0,48,135,0.2),rgba(204,0,0,0.1),rgba(212,175,55,0.05)); border:1px solid rgba(212,175,55,0.2); padding:4rem; margin-bottom:3rem; text-align:center; }
+.conc-hero p { font-family:'Playfair Display',serif; font-style:italic; font-size:clamp(1.1rem,2.5vw,1.7rem); line-height:1.7; max-width:800px; margin:0 auto; }
+.cgrid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+.ccard { background:var(--dark2); border:1px solid rgba(255,255,255,0.07); padding:2.5rem; display:flex; gap:1.5rem; transition:all 0.3s; }
+.ccard:hover { border-color:rgba(212,175,55,0.3); transform:translateY(-3px); }
+.cn { font-family:'Playfair Display',serif; font-size:3rem; font-weight:900; color:rgba(212,175,55,0.18); line-height:1; flex-shrink:0; }
+.cc2 h4 { font-size:0.88rem; font-weight:600; margin-bottom:0.6rem; color:var(--gold); }
+.cc2 p { font-size:0.8rem; color:var(--gray); line-height:1.7; }
+
+.auth-s { background:var(--dark2); border-top:1px solid rgba(212,175,55,0.15); }
+.auth-in { max-width:1200px; margin:0 auto; padding:6rem 3rem; display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:center; }
+.auth-name { font-family:'Playfair Display',serif; font-size:clamp(1.8rem,3vw,3rem); font-weight:700; margin-bottom:1rem; margin-top:1rem; }
+.auth-uni { font-size:0.83rem; color:var(--gray); line-height:1.8; }
+.irow { display:flex; align-items:center; gap:1.5rem; padding:1.2rem 0; border-bottom:1px solid rgba(255,255,255,0.06); }
+.ilabel { font-size:0.62rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--gray); width:100px; flex-shrink:0; }
+.ival { font-size:0.88rem; }
+
+footer { background:var(--dark); border-top:1px solid rgba(255,255,255,0.05); padding:2rem 3rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
+footer p { font-size:0.7rem; color:var(--gray2); }
+
+.reveal { opacity:0; transform:translateY(25px); transition:opacity 0.7s ease,transform 0.7s ease; }
+.reveal.on { opacity:1; transform:translateY(0); }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(25px)} to{opacity:1;transform:translateY(0)} }
+@keyframes spin { to{transform:rotate(360deg)} }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.85)} }
+
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;padding:7rem 1.5rem 3rem}
+  .hero-right{display:none}
+  .about-in{grid-template-columns:1fr}
+  .mg{grid-template-columns:1fr 1fr}
+  .cg{grid-template-columns:1fr}
+  .cc.wide{grid-column:1}
+  .cgrid{grid-template-columns:1fr}
+  .auth-in{grid-template-columns:1fr}
+  nav{padding:1rem 1.5rem}
+  .nav-links{display:none}
+  .sw{padding:5rem 1.5rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">РСВ · Исследование 2026</div>
+  <ul class="nav-links">
+    <li><a href="#about">О проекте</a></li>
+    <li><a href="#methodology">Методология</a></li>
+    <li><a href="#results">Результаты</a></li>
+    <li><a href="#conclusion">Выводы</a></li>
+    <li><a href="#authors">Авторы</a></li>
+  </ul>
+</nav>
+
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="flag-top"></div>
+  <div class="hero-left">
+    <div class="eyebrow"><div class="edot"></div>Социологическое исследование · 2026</div>
+    <h1>
+      <span class="h1-plain">Россия —</span>
+      <span class="h1-gold">Страна Возможностей</span>
+    </h1>
+    <p class="hero-desc">Комплексное исследование восприятия возможностей среди молодёжи 17–30 лет. Анализ сфер образования, карьеры, предпринимательства и самореализации в современной России.</p>
+    <div class="cta-group">
+      <a href="#results" class="btn-p">Смотреть результаты</a>
+      <a href="#about" class="btn-s">О проекте</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="stats-card">
+      <div class="sc-title">Статистика исследования</div>
+      <div class="sg">
+        <div class="si"><span class="sn" id="heroTotal">—</span><span class="sl">Респондентов</span></div>
+        <div class="si"><span class="sn">18</span><span class="sl">Вопросов</span></div>
+        <div class="sdiv"></div>
+        <div class="si"><span class="sn">5</span><span class="sl">Блоков</span></div>
+        <div class="si"><span class="sn">2026</span><span class="sl">Год</span></div>
+      </div>
+      <div class="live-row"><div class="ldot"></div>Данные обновляются в реальном времени</div>
+    </div>
+  </div>
+</section>
+
+<div class="fdiv"></div>
+
+<section class="about-s" id="about">
+  <div class="sw">
+    <div class="about-in">
+      <div class="about-blocks reveal">
+        <div class="ab"><div class="ab-icon">🎓</div><div><h3>Образование</h3><p>Доступность и качество образовательных возможностей в различных регионах страны.</p></div></div>
+        <div class="ab"><div class="ab-icon">💼</div><div><h3>Карьера и трудоустройство</h3><p>Оценка перспектив занятости и готовности к профессиональной мобильности.</p></div></div>
+        <div class="ab"><div class="ab-icon">🚀</div><div><h3>Предпринимательство</h3><p>Условия для открытия бизнеса и государственная поддержка молодых предпринимателей.</p></div></div>
+        <div class="ab"><div class="ab-icon">🌍</div><div><h3>Самореализация</h3><p>Личные амбиции и оценка возможностей достижения жизненных целей в России.</p></div></div>
+      </div>
+      <div class="reveal">
+        <div class="sl2">О исследовании</div>
+        <h2 class="st">Зачем это исследование?</h2>
+        <p class="sd" style="margin-top:1.5rem">Россия — страна с огромным потенциалом. Но как сама молодёжь воспринимает свои возможности? Видят ли они себя частью страны будущего?</p>
+        <p class="sd" style="margin-top:1rem">Наше исследование собирает реальные мнения, анализирует зависимости между возрастом, полом, регионом и восприятием возможностей — только данные, без домыслов.</p>
+        <div class="aq"><p>«Возможности существуют везде — важно понять, видит ли их молодёжь и что мешает их реализации.»</p><cite>— Группа П-118, ТюмГУ, 2026</cite></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="fdiv"></div>
+
+<section id="methodology">
+  <div class="sw">
+    <div class="sh reveal">
+      <div><div class="sl2">Как мы исследовали</div><h2 class="st">Методология</h2></div>
+      <p class="sd">Анонимный онлайн-опрос среди молодёжи 17–30 лет с последующим статистическим анализом данных.</p>
+    </div>
+    <div class="mg reveal">
+      <div class="mc"><div class="mn">1</div><div class="mi">📋</div><h3>Разработка анкеты</h3><p>18 вопросов в 5 тематических блоках. Все вопросы обязательны для ответа.</p></div>
+      <div class="mc"><div class="mn">2</div><div class="mi">📡</div><h3>Сбор данных</h3><p>Распространение через социальные сети и мессенджеры среди целевой аудитории.</p></div>
+      <div class="mc"><div class="mn">3</div><div class="mi">📊</div><h3>Анализ результатов</h3><p>Статистическая обработка: частотный анализ, кросс-табуляция по полу, возрасту и региону.</p></div>
+      <div class="mc"><div class="mn">4</div><div class="mi">💡</div><h3>Интерпретация</h3><p>Формулировка выводов и рекомендаций на основе выявленных закономерностей.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="fdiv"></div>
+
+<section class="res-s" id="results">
+  <div class="sw">
+    <div class="sh reveal">
+      <div><div class="sl2">Данные опроса</div><h2 class="st">Результаты<br>в реальном времени</h2></div>
+    </div>
+    <div class="rbar reveal">
+      <div class="lbadge"><div class="ldot"></div>Live · Обновляется каждые 30 секунд</div>
+      <div class="rright">
+        <span class="lupd" id="lastUpdate">Загрузка...</span>
+        <button class="rbtn" onclick="loadData()">↻ Обновить</button>
+      </div>
+    </div>
+    <div id="chartsContainer">
+      <div class="loading"><div class="spin"></div>Загрузка данных из базы...</div>
+    </div>
+  </div>
+</section>
+
+<div class="fdiv"></div>
+
+<section id="conclusion">
+  <div class="sw">
+    <div class="sh reveal"><div><div class="sl2">Итоги исследования</div><h2 class="st">Выводы</h2></div></div>
+    <div class="conc-hero reveal">
+      <p>Молодёжь России видит возможности — но их доступность неравномерна. IT-сектор лидирует как сфера надежд, тогда как бюрократия остаётся главным барьером для предпринимателей.</p>
+    </div>
+    <div class="cgrid reveal">
+      <div class="ccard"><div class="cn">01</div><div class="cc2"><h4>Региональный разрыв</h4><p>Молодёжь крупных городов значительно оптимистичнее оценивает возможности по сравнению с представителями малых городов и сёл.</p></div></div>
+      <div class="ccard"><div class="cn">02</div><div class="cc2"><h4>IT — сфера надежд</h4><p>Технологический сектор воспринимается как наиболее перспективная область для профессиональной реализации молодого поколения.</p></div></div>
+      <div class="ccard"><div class="cn">03</div><div class="cc2"><h4>Барьеры для бизнеса</h4><p>Бюрократия — главный сдерживающий фактор молодёжного предпринимательства, несмотря на наличие госпрограмм поддержки.</p></div></div>
+      <div class="ccard"><div class="cn">04</div><div class="cc2"><h4>Патриотический оптимизм</h4><p>Большинство опрошенных связывают своё будущее с Россией и готовы реализовываться внутри страны при наличии условий.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="fdiv"></div>
+
+<section class="auth-s" id="authors">
+  <div class="auth-in">
+    <div class="reveal">
+      <div class="sl2">Исследовательская группа</div>
+      <h2 class="auth-name">Эргашов Амирхон Зоирович</h2>
+      <p class="auth-uni">Тюменский государственный университет<br>Институт математики и компьютерных наук<br>2025–2026 учебный год</p>
+    </div>
+    <div class="reveal">
+      <div class="irow"><span class="ilabel">Группа</span><span class="ival">П-118</span></div>
+      <div class="irow"><span class="ilabel">Тема</span><span class="ival">Россия — страна возможностей</span></div>
+      <div class="irow"><span class="ilabel">Предмет</span><span class="ival">ОРГ · H-интеграция</span></div>
+      <div class="irow"><span class="ilabel">Формат</span><span class="ival">Исследование · социологический опрос</span></div>
+      <div class="irow"><span class="ilabel">Метод</span><span class="ival">Анонимное онлайн-анкетирование</span></div>
+      <div class="irow"><span class="ilabel">Год</span><span class="ival">2026</span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 · Группа П-118 · ТюмГУ · Все данные собраны анонимно</p>
+  <svg width="30" height="18" viewBox="0 0 30 18"><rect width="30" height="6" fill="#fff"/><rect y="6" width="30" height="6" fill="#003087"/><rect y="12" width="30" height="6" fill="#cc0000"/></svg>
+</footer>
+
+<script>
+const API = 'https://script.google.com/macros/s/AKfycbxKZskvxQmC9uBrqoGhe2QV9eNltGq4cN5yY8XULAsss-NstZAYK-oDcZIfcaBQhkT_/exec';
+const PAL = ['#d4af37','#cc0000','#003087','#7a9e7e','#c97d4e','#8b6ab5','#4e9ec9','#c94e7a','#4ec9a0','#c9b44e'];
+let charts = [];
+
+const BLOCKS = [
+  {title:'Блок 1 — Портрет респондента', count:4},
+  {title:'Блок 2 — Возможности в образовании', count:2},
+  {title:'Блок 3 — Карьера и трудоустройство', count:3},
+  {title:'Блок 4 — Предпринимательство', count:2},
+  {title:'Блок 5 — Общая оценка', count:7},
+];
+
+async function loadData() {
+  try {
+    const r = await fetch(API);
+    const rows = await r.json();
+    if (!Array.isArray(rows) || rows.length === 0) { showEmpty(); return; }
+
+    document.getElementById('heroTotal').textContent = rows.length;
+    document.getElementById('lastUpdate').textContent = 'Обновлено: ' + new Date().toLocaleTimeString('ru-RU');
+
+    charts.forEach(c => c.destroy()); charts = [];
+
+    const keys = Object.keys(rows[0]).filter(k => k && k !== 'Отметка времени');
+    const data = {};
+    keys.forEach(k => {
+      data[k] = {};
+      rows.forEach(row => {
+        const v = row[k] || 'Нет ответа';
+        data[k][v] = (data[k][v] || 0) + 1;
+      });
+    });
+
+    const container = document.getElementById('chartsContainer');
+    container.innerHTML = '';
+    let qi = 0;
+
+    BLOCKS.forEach((block, bi) => {
+      const bd = document.createElement('div');
+      bd.innerHTML = `<div class="bh"><div class="bn">0${bi+1}</div><div class="bt">${block.title}</div></div>`;
+      const grid = document.createElement('div');
+      grid.className = 'cg';
+      bd.appendChild(grid);
+
+      for (let i = 0; i < block.count; i++) {
+        const q = keys[qi]; if (!q || !data[q]) { qi++; continue; }
+        const lbls = Object.keys(data[q]);
+        const vals = Object.values(data[q]);
+        const total = vals.reduce((a,b)=>a+b,0);
+        const maxV = Math.max(...vals);
+        const topL = lbls[vals.indexOf(maxV)];
+        const topP = ((maxV/total)*100).toFixed(0);
+        const isWide = lbls.length >= 4;
+        const isBar = lbls.length >= 4;
+        const isTall = lbls.length >= 5;
+        const shortQ = q.replace(/^\d+\.\s*/,'');
+
+        const card = document.createElement('div');
+        card.className = 'cc' + (isWide ? ' wide' : '');
+        card.innerHTML = `
+          <div class="cqn">Вопрос ${qi+1}</div>
+          <div class="cq">${shortQ}</div>
+          <div class="cw${isTall?' tall':''}"><canvas id="cv_${bi}_${i}"></canvas></div>
+          <div class="cf">
+            <div class="ctotal">Ответов: <span>${total}</span></div>
+            <div class="ctop">Лидер: <span>${topL.substring(0,28)}${topL.length>28?'…':''} (${topP}%)</span></div>
+          </div>`;
+        grid.appendChild(card);
+
+        const qIdx = qi;
+        setTimeout(() => {
+          const ctx = document.getElementById(`cv_${bi}_${i}`);
+          if (!ctx) return;
+          const ch = new Chart(ctx, {
+            type: isBar ? 'bar' : 'doughnut',
+            data: {
+              labels: lbls.map(l => l.length>40?l.substring(0,40)+'…':l),
+              datasets:[{ data:vals, backgroundColor:PAL.slice(0,lbls.length), borderColor:'transparent', borderRadius: isBar?4:0, borderWidth:0 }]
+            },
+            options:{
+              responsive:true, maintainAspectRatio:false,
+              plugins:{
+                legend:{ display:!isBar, position:'bottom', labels:{color:'#7a7a9a',font:{family:'Montserrat',size:10},padding:12,boxWidth:10,usePointStyle:true} },
+                tooltip:{
+                  callbacks:{ label: c => ` ${c.raw} чел. · ${((c.raw/total)*100).toFixed(1)}%` },
+                  backgroundColor:'#0f0f1a', titleColor:'#d4af37', bodyColor:'#f5f0e8',
+                  borderColor:'rgba(212,175,55,0.3)', borderWidth:1, padding:12
+                }
+              },
+              scales: isBar ? {
+                x:{ticks:{color:'#7a7a9a',font:{size:10},maxRotation:30},grid:{color:'rgba(255,255,255,0.04)'},border:{color:'rgba(255,255,255,0.08)'}},
+                y:{ticks:{color:'#7a7a9a',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'},border:{color:'rgba(255,255,255,0.08)'},beginAtZero:true}
+              } : {},
+              animation:{duration:900,easing:'easeInOutQuart'}
+            }
+          });
+          charts.push(ch);
+        }, 80);
+        qi++;
+      }
+      container.appendChild(bd);
+    });
+  } catch(e) {
+    document.getElementById('chartsContainer').innerHTML = `
+      <div class="loading">
+        <div style="font-size:2.5rem">⚠️</div>
+        <div style="color:#ff6b6b">Ошибка загрузки данных</div>
+        <div style="font-size:0.75rem;color:var(--gray)">Проверьте подключение к интернету</div>
+        <button class="rbtn" onclick="loadData()" style="margin-top:1rem">Попробовать снова</button>
+      </div>`;
+    console.error(e);
+  }
+}
+
+function showEmpty() {
+  document.getElementById('heroTotal').textContent = '0';
+  document.getElementById('chartsContainer').innerHTML = `
+    <div class="loading">
+      <div style="font-size:2.5rem">📋</div>
+      <div>Ответов пока нет</div>
+      <div style="font-size:0.75rem;color:var(--gray)">Поделитесь ссылкой на форму — результаты появятся автоматически</div>
+    </div>`;
+}
+
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){e.target.classList.add('on');obs.unobserve(e.target);} });
+}, {threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+loadData();
+setInterval(loadData, 30000);
+</script>
+</body>
+</html>
